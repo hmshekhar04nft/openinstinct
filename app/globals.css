@@ -8,13 +8,13 @@
 @source "../node_modules/streamdown/dist/*.js";
 
 :root {
-  --primary: #007aff;
+  --primary: #00a884;
   --primary-foreground: #fff;
-  --ring: #007aff;
+  --ring: #00a884;
 }
 
 .dark {
-  --primary: #0a84ff;
+  --primary: #00a884;
   --primary-foreground: #fff;
-  --ring: #0a84ff;
+  --ring: #00a884;
 }

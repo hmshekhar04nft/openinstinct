@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageCircleIcon } from "lucide-react";
+import { ChatHeader } from "../../_components/chat-header";
 import { useState } from "react";
 import type { ChatUsage } from "@shared/chat/schema";
 import type { TraceView } from "../_lib/trace-view";
@@ -20,21 +20,9 @@ export function ChatSession({
   const agent = useSessionAgent(sessionId);
 
   return (
-    <div className="relative flex h-full min-h-0 overflow-hidden bg-background text-foreground">
+    <div className="relative flex flex-1 min-h-0 overflow-hidden bg-background text-foreground">
       <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden">
-        <header className="flex items-center gap-3 border-b border-border bg-card px-4 py-2.5">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
-            <MessageCircleIcon className="size-5" />
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-[15px] font-medium leading-tight">
-              Assistant
-            </p>
-            <p className="text-xs leading-tight text-muted-foreground">
-              online
-            </p>
-          </div>
-        </header>
+        <ChatHeader />
         <div className="whatsapp-chat-bg relative flex min-h-0 flex-1 flex-col">
         <ChatConversation
           agent={agent}

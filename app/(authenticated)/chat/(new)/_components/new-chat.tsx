@@ -57,7 +57,7 @@ export function NewChat() {
   };
 
   return (
-    <PromptInput compact onSubmit={handleSubmit}>
+    <PromptInput className="rounded-3xl bg-card" compact onSubmit={handleSubmit}>
       <PromptInputBody>
         <PromptInputTextarea
           className="min-h-0"

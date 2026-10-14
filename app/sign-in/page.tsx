@@ -1,3 +1,4 @@
+import { MessageCircleIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { EmailAuthForm } from "@app/sign-in/_components/email-form";
@@ -20,9 +21,10 @@ export default async function SignInPage({
       : "/";
 
   return (
-    <main className="flex min-h-svh items-center justify-center bg-background px-4 py-8 text-foreground">
-      <section className="w-full max-w-sm space-y-6">
+    <main className="flex min-h-svh items-center justify-center whatsapp-chat-bg px-5 py-8 text-foreground">
+      <section className="w-full max-w-sm space-y-6 rounded-3xl border border-border bg-card/95 p-6 shadow-xl">
         <div className="flex flex-col gap-2">
+          <span className="mb-3 flex size-12 items-center justify-center rounded-full bg-primary text-primary-foreground"><MessageCircleIcon className="size-6" /></span>
           <h1 className="type-page-title">
             {reauthenticate ? "Sign in again" : "Sign In"}
           </h1>
