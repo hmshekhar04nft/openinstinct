@@ -12,7 +12,7 @@ export default defineWorkflowTool({
   execution: "background",
   async execute(input, ctx) {
     "use workflow";
-    const result = await ctx.agent("browser-agent", {
+    const result = await ctx.agent("browserbase-agent", {
       ...input,
       outputSchema: z
         .record(z.string(), z.json())

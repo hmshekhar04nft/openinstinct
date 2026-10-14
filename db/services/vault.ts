@@ -101,6 +101,8 @@ export async function deleteVaultItem(scope: AccessScope, id: string) {
     .returning({ id: vaultItems.id });
   if (rows.length === 0) return false;
   await deleteEncryptedSecret(scope, id);
+  // Removing a saved item also erases persisted browser login state.
+  await deleteEncryptedSecret(scope, "browserbase-profile");
   return true;
 }
 
@@ -231,4 +233,12 @@ function serializeVaultRecord<T extends { createdAt: Date; updatedAt: Date }>(
     createdAt: record.createdAt.toISOString(),
     updatedAt: record.updatedAt.toISOString(),
   };
+}
+
+/** Internal opaque browser state. Never list or return to the model. */
+export async function writeBrowserProfile(scope: AccessScope, value: string) {
+  await writeVaultSecret(scope, "browserbase-profile", value);
+}
+export async function readBrowserProfile(scope: AccessScope) {
+  return readVaultSecret(scope, "browserbase-profile");
 }
