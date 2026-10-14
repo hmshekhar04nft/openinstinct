@@ -5,6 +5,11 @@ import { getGatewayModel } from "@db/services/settings";
 import { openRouterModel } from "@shared/openrouter";
 import { scopeFromPrincipal } from "@agent/lib/principal-scope";
 
+function contextWindowForModel(modelId: string): number {
+  if (modelId.includes("muse-spark")) return 1_000_000;
+  return 131_072;
+}
+
 export default defineAgent({
   defaultTools: false,
   model: defineDynamic({
@@ -23,7 +28,10 @@ export default defineAgent({
         const caller = ctx.session.auth.current ?? ctx.session.auth.initiator;
         if (!caller) throw new Error("An authenticated user is required.");
         const modelId = await getGatewayModel(scopeFromPrincipal(caller));
-        return openRouterModel(modelId);
+        return {
+          model: openRouterModel(modelId),
+          modelContextWindowTokens: contextWindowForModel(modelId),
+        };
       },
     },
   }),
