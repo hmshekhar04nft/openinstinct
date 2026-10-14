@@ -32,6 +32,7 @@ const client = new Client({ host: "" });
 const messageReducer = defaultMessageReducer();
 
 export function useSessionAgent(sessionId: string): ChatAgent {
+  const [pendingMessage, setPendingMessage] = useState<string>();
   const [history, setHistory] = useState<SessionHistoryPage>();
   const [status, setStatus] = useState<UseEveAgentStatus>("resuming");
   const [error, setError] = useState<Error>();
@@ -165,6 +166,7 @@ export function useSessionAgent(sessionId: string): ChatAgent {
         if (!current) throw new Error("The conversation is still loading.");
         setError(undefined);
         setStatus("submitted");
+        setPendingMessage(typeof message === "string" ? message : message.filter((p) => p.type === "text").map((p) => p.text).join("\n"));
         const session = client.sessions.attach(sessionId, {
           streamIndex: current.endIndex,
         });
@@ -174,6 +176,7 @@ export function useSessionAgent(sessionId: string): ChatAgent {
           for await (const event of response) {
             nextIndex += 1;
             appendSessionEvent(historyRef, setHistory, event, nextIndex);
+            if (event.type === "message.received") setPendingMessage(undefined);
             setStatus("streaming");
           }
           setStatus("ready");
@@ -206,6 +209,7 @@ export function useSessionAgent(sessionId: string): ChatAgent {
           for await (const event of response) {
             nextIndex += 1;
             appendSessionEvent(historyRef, setHistory, event, nextIndex);
+            if (event.type === "message.received") setPendingMessage(undefined);
             setStatus("streaming");
           }
           setStatus("ready");
@@ -245,7 +249,7 @@ export function useSessionAgent(sessionId: string): ChatAgent {
   };
 
   const events = history?.events ?? emptyEvents;
-  const data = useMemo<EveMessageData>(
+  const reducedData = useMemo<EveMessageData>(
     () =>
       events.reduce(
         (current, event) => messageReducer.reduce(current, event),
@@ -253,6 +257,13 @@ export function useSessionAgent(sessionId: string): ChatAgent {
       ),
     [events]
   );
+
+  const data: EveMessageData = pendingMessage ? {
+    ...reducedData,
+    messages: [...reducedData.messages, {
+      id: "optimistic-outgoing", role: "user", parts: [{type: "text", text: pendingMessage}], metadata: {optimistic: true},
+    }],
+  } : reducedData;
 
   return {
     cancel: async () => await client.sessions.attach(sessionId).cancel(),
