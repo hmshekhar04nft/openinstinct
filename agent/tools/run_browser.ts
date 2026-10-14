@@ -9,7 +9,6 @@ export default defineWorkflowTool({
     message: z.string().min(1),
     agentId: z.string().optional(),
   }),
-  execution: "background",
   async execute(input, ctx) {
     "use workflow";
     const result = await ctx.agent("browserbase-agent", {

@@ -25,12 +25,16 @@ export default defineTool({
       "close",
     ]),
     sessionId: z.string().optional(),
-    url: z.string().optional(),
+    url: z.url().optional(),
     selector: z.string().optional(),
     text: z.string().max(2000).optional(),
     handle: z.string().optional(),
   }),
   async execute(input, ctx) {
+    if (input.action === "create" && !input.url)
+      throw new Error(
+        "create requires url: the complete HTTPS target from the assigned task."
+      );
     const scope = await requireWorkerScope(ctx);
     if (input.action === "vault_list")
       return (await readVaultItems(scope))
