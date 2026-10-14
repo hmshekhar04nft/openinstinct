@@ -20,7 +20,7 @@ export function openRouterModel(modelId: string) {
     apiKey: requireOpenRouterApiKey(),
     headers: {
       "HTTP-Referer": process.env.BETTER_AUTH_URL ?? "http://localhost:3000",
-      "X-Title": "OpenInstinct",
+      "X-Title": "Assistant",
     },
   });
   return provider.chatModel(modelId);
