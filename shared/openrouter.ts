@@ -3,7 +3,7 @@ import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 export const OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1";
 
 export const DEFAULT_OPENROUTER_MODEL =
-  "nvidia/nemotron-3-super-120b-a12b:free";
+  "meta/muse-spark-1.3-contributor";
 
 function requireOpenRouterApiKey() {
   const apiKey = process.env.OPENROUTER_API_KEY;
