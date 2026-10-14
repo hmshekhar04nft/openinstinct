@@ -143,7 +143,7 @@ export function ChatConversation({
               message={message}
               onInputResponses={(responses) => agent.respond(responses)}
               timestamp={timestamps.get(message.id)}
-              userVisibleOnly={traceView === "imessage"}
+              userVisibleOnly
             />
           );
         })}

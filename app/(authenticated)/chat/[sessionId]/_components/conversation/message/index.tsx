@@ -91,7 +91,7 @@ function userVisibleParts(
     );
   }
 
-  return sentMessageParts ?? [];
+  return sentMessageParts ?? message.parts.filter((part) => part.type === "text" || part.type === "file");
 }
 
 const timestampFormatter = new Intl.DateTimeFormat(undefined, {
