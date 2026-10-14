@@ -16,7 +16,7 @@ export function ChatSession({
   readonly initialUsage?: ChatUsage;
   readonly sessionId: string;
 }) {
-  const [traceView, setTraceView] = useState<TraceView>("imessage");
+  const [traceView, setTraceView] = useState<TraceView>("trace");
   const agent = useSessionAgent(sessionId);
 
   return (

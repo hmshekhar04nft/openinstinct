@@ -49,7 +49,6 @@ export function ChatConversation({
       ? lastMessage.id
       : undefined;
   const showPendingThinking =
-    traceView === "trace" &&
     isBusy &&
     (agent.status === "submitted" ||
       lastMessage?.role !== "assistant" ||
@@ -149,7 +148,7 @@ export function ChatConversation({
           );
         })}
         {showPendingThinking ? <PendingThinking /> : null}
-        {traceView === "trace" && errorMessage ? (
+        {errorMessage ? (
           <ErrorMessage message={errorMessage} />
         ) : null}
       </ConversationContent>

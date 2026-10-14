@@ -1,7 +1,7 @@
 import { defineMemory } from "eve/memory";
 import { fileMemory } from "eve/memory/file";
 import { vercelBlob } from "eve/memory/file/vercel";
-import { fsFileMemoryBackend } from "../lib/profile-memory-fs";
+import { postgresFileMemoryBackend } from "../lib/profile-memory-postgres";
 import {
   preserveProfileMemoryCancellation,
   resolveProfileMemoryBackend,
@@ -16,7 +16,7 @@ const provider = preserveProfileMemoryCancellation(
         backend: vercelBlob(backend.options),
       })
     : backend.kind === "fs"
-      ? fileMemory({ backend: fsFileMemoryBackend() })
+      ? fileMemory({ backend: postgresFileMemoryBackend() })
       : fileMemory()
 );
 
