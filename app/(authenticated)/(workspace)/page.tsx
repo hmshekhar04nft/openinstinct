@@ -33,6 +33,9 @@ export default async function Page({ searchParams }: PageProps<"/">) {
     getGatewayModel(scope),
   ]);
   const browserReady = true;
+  const browserConfigured =
+    process.env.BROWSERBASE_ENABLED === "true" &&
+    Boolean(process.env.BROWSERBASE_API_KEY);
   const imageStorageReady = Boolean(
     env.BLOB_STORE_ID ?? env.BLOB_READ_WRITE_TOKEN
   );
@@ -64,10 +67,14 @@ export default async function Page({ searchParams }: PageProps<"/">) {
       <WorkspaceSection headingId="connectors-heading" title="Infrastructure">
         <div className="divide-y divide-border/50 border-y border-border/50">
           <ConnectorRow
-            action={<Badge variant="success">Connected</Badge>}
-            description="Run isolated browsers in your Kernel account."
+            action={
+              <Badge variant={browserConfigured ? "success" : "secondary"}>
+                {browserConfigured ? "Configured" : "Setup pending"}
+              </Badge>
+            }
+            description="Free prototype: saved-login and read tasks, with a monthly browser quota."
             icon={<CloudIcon />}
-            label="Kernel browser"
+            label="Browserbase browser"
           />
           <ConnectorRow
             action={
@@ -87,7 +94,7 @@ export default async function Page({ searchParams }: PageProps<"/">) {
             action={<ModelSelector modelId={gatewayModel} />}
             description={gatewayModel}
             icon={<BotIcon />}
-            label="AI Gateway model"
+            label="OpenRouter model"
           />
         </div>
       </WorkspaceSection>
