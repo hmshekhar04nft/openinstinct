@@ -26,6 +26,16 @@ afterEach(() => {
 });
 
 describe("Eve channel authentication", () => {
+  it("authenticates an email-only user without requiring a phone number", async () => {
+    const emailSession = authSessionFor({ id: "email-user" });
+    getAuthSessionMock.mockResolvedValue({ ...emailSession, user: { ...emailSession.user, phoneNumber: null } });
+    const route = findRoute("GET", "/eve/v1/session/:sessionId/stream");
+    const responsePromise = route.handler(new Request("https://assistant.example/eve/v1/session/other-session/stream"), unexpectedRouteContext());
+    await vi.runAllTimersAsync();
+    expect((await responsePromise).status).toBe(403);
+    expect(isSessionOwnedMock).toHaveBeenCalledWith(expect.objectContaining({ userId: "better-auth:email-user" }), "other-session");
+  });
+
   it("checks decoded session route ids against workspace ownership", async () => {
     const route = eveChannel.routes.find(
       (candidate) =>

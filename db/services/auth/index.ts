@@ -32,7 +32,7 @@ async function initializeAuth() {
   const { betterAuthSecret } = await getInstallationSecrets();
   const { LINK_CLIENT_ID, LINK_CLIENT_SECRET, STRIPE_PUBLISHABLE_KEY } = env;
   return betterAuth({
-    appName: "Local Vault Assistant",
+    appName: "Assistant",
     baseURL: betterAuthBaseURL(),
     database: drizzleAdapter(db, {
       provider: "pg",
