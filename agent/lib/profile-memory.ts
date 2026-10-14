@@ -32,7 +32,7 @@ export function resolveProfileMemoryBackend(
         kind: "vercel-blob" as const,
         options: { token: environment.BLOB_READ_WRITE_TOKEN },
       }
-    : { kind: "automatic" as const };
+    : { kind: "fs" as const };
 }
 
 export function resolveProfileMemoryScope(context: MemoryScopeContext) {
