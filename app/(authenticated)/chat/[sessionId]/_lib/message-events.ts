@@ -11,6 +11,7 @@ export function messageTimestamps(events: readonly MessageStreamEvent[]) {
 
   for (const event of events) {
     if (event.type === "message.received") {
+      timestamps.set(`${event.meta.id}:user`, event.meta.at);
       timestamps.set(`${event.data.turnId}:user`, event.meta.at);
     }
 
@@ -30,6 +31,7 @@ export function imessageTimestamps(events: readonly MessageStreamEvent[]) {
 
   for (const event of events) {
     if (event.type === "message.received") {
+      timestamps.set(`${event.meta.id}:user`, event.meta.at);
       timestamps.set(`${event.data.turnId}:user`, event.meta.at);
     }
   }

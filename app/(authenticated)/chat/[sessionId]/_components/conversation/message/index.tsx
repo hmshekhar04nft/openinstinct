@@ -26,7 +26,8 @@ export function AgentMessage({
 }) {
   const [optimisticTimestamp] = useState(() => new Date().toISOString());
   const displayedTimestamp =
-    timestamp ?? (message.role === "user" ? optimisticTimestamp : undefined);
+    timestamp ??
+    (message.metadata?.optimistic ? optimisticTimestamp : undefined);
   const visibleParts = userVisibleOnly
     ? userVisibleParts(message, sentMessageParts)
     : message.parts;
@@ -91,7 +92,10 @@ function userVisibleParts(
     );
   }
 
-  return sentMessageParts ?? message.parts.filter((part) => part.type === "text" || part.type === "file");
+  return (
+    sentMessageParts ??
+    message.parts.filter((part) => part.type === "text" || part.type === "file")
+  );
 }
 
 const timestampFormatter = new Intl.DateTimeFormat(undefined, {

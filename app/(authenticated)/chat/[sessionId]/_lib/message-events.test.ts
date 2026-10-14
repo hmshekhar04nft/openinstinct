@@ -275,3 +275,19 @@ function completedMessage(message: string, at: string): MessageStreamEvent {
     type: "message.completed",
   };
 }
+
+describe("original received-message timestamps", () => {
+  it("keys by the event id used by Eve's user-message reducer", () => {
+    const event = {
+      type: "message.received",
+      meta: { id: "event-original", at: "2026-10-14T22:57:18.000Z" },
+      data: { turnId: "turn_0", message: "hello", parts: [], sequence: 0 },
+    } as unknown as MessageStreamEvent;
+    expect(messageTimestamps([event]).get("event-original:user")).toBe(
+      "2026-10-14T22:57:18.000Z"
+    );
+    expect(imessageTimestamps([event]).get("event-original:user")).toBe(
+      "2026-10-14T22:57:18.000Z"
+    );
+  });
+});
