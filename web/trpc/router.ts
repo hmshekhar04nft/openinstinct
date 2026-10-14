@@ -1,4 +1,3 @@
-import { gateway } from "ai";
 import { revokeToken, startAuthorization } from "@vercel/connect";
 import { z } from "zod";
 import { listBrowserTraces } from "@db/services/browser-traces";
@@ -9,6 +8,7 @@ import { deleteVaultItem, saveVaultItem } from "@db/services/vault";
 import type { AccessScope } from "@shared/identity/access-scope";
 import { saveChatSchema } from "@shared/chat/schema";
 import { env } from "@shared/environment";
+import { listOpenRouterFreeModels } from "@shared/openrouter";
 import {
   googleWorkspaceSubject,
   googleWorkspaceTokenParams,
@@ -102,7 +102,7 @@ async function startGoogleWorkspaceAuthorization(
 }
 
 async function readModelCatalog() {
-  const { models } = await gateway.getAvailableModels();
+  const models = await listOpenRouterFreeModels();
 
   return z
     .array(
@@ -119,19 +119,12 @@ async function readModelCatalog() {
       })
     )
     .parse(
-      models
-        .filter((model) => model.modelType === "language")
-        .map((model) => ({
-          id: model.id,
-          name: model.name,
-          ownedBy: model.specification.provider,
-          pricing: model.pricing
-            ? {
-                input: perMillion(model.pricing.input),
-                output: perMillion(model.pricing.output),
-              }
-            : undefined,
-        }))
+      models.map((model) => ({
+        id: model.id,
+        name: model.name,
+        ownedBy: model.ownedBy,
+        pricing: { input: 0, output: 0 },
+      }))
     );
 }
 

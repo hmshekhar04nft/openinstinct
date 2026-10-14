@@ -4,9 +4,6 @@ import {
   combineChatUsage,
   formatChatUsage,
 } from "@app/(authenticated)/chat/_lib/chat-usage";
-import { Alert, AlertDescription } from "@web/components/ui/alert";
-import { Badge } from "@web/components/ui/badge";
-import { Button } from "@web/components/ui/button";
 import { listChats } from "@db/services/chats";
 import { requireRequestScope } from "@web/auth/request-scope";
 
@@ -21,63 +18,60 @@ export default async function AllChatsPage() {
   )?.sessionId;
 
   return (
-    <div className="mx-auto w-full max-w-4xl space-y-8 px-4 py-6 sm:px-6 sm:py-8">
-      <header className="flex items-start justify-between gap-6">
-        <div>
-          <h1 className="type-page-title">All chats</h1>
-          <p className="type-supporting-body mt-1 text-muted-foreground">
-            Every conversation in this workspace · Usage{" "}
-            {formatChatUsage(totalUsage)}
-          </p>
-        </div>
-        <Button nativeButton={false} render={<Link href="/chat" />} size="sm">
-          <PlusIcon />
-          New chat
-        </Button>
+    <div className="relative mx-auto flex min-h-full w-full max-w-2xl flex-col bg-background">
+      <header className="sticky top-0 z-10 border-b border-border bg-card px-4 py-3">
+        <h1 className="text-xl font-semibold text-foreground">Chats</h1>
+        <p className="text-xs text-muted-foreground">
+          Usage {formatChatUsage(totalUsage)}
+        </p>
       </header>
 
-      <section aria-label="Chat history" className="grid gap-2">
+      <section aria-label="Chat history" className="flex-1 divide-y divide-border/60">
         {chats.length === 0 ? (
-          <Alert>
-            <MessageSquareIcon />
-            <AlertDescription>No chats yet.</AlertDescription>
-          </Alert>
+          <div className="flex flex-col items-center gap-2 px-6 py-16 text-center">
+            <MessageSquareIcon className="size-8 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">
+              No chats yet. Tap the green button to start one.
+            </p>
+          </div>
         ) : (
           chats.map((chat) => (
-            <Button
+            <Link
               key={chat.sessionId}
-              nativeButton={false}
-              render={
-                <Link href={`/chat/${encodeURIComponent(chat.sessionId)}`} />
-              }
-              variant="surface"
+              className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/50"
+              href={`/chat/${encodeURIComponent(chat.sessionId)}`}
             >
-              <MessageSquareIcon
-                className={
-                  chat.sessionId === imessageSessionId
-                    ? "size-4 shrink-0 text-information"
-                    : "size-4 shrink-0 text-muted-foreground"
-                }
-              />
-              <span className="min-w-0 flex-1 truncate">
-                {chat.sessionId === imessageSessionId ? "iMessage" : chat.title}
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-muted">
+                <MessageSquareIcon className="size-5 text-muted-foreground" />
               </span>
-              {chat.sessionId === imessageSessionId ? (
-                <Badge variant="information">Main thread</Badge>
-              ) : null}
-              <span className="shrink-0 type-label text-muted-foreground">
-                {formatChatUsage(chat.usage)}
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-[15px] font-medium text-foreground">
+                  {chat.sessionId === imessageSessionId
+                    ? "iMessage"
+                    : chat.title}
+                </span>
+                <span className="block truncate text-xs text-muted-foreground">
+                  {formatChatUsage(chat.usage)}
+                </span>
               </span>
               <time
-                className="shrink-0 type-label text-muted-foreground"
+                className="shrink-0 text-xs text-muted-foreground"
                 dateTime={chat.updatedAt}
               >
                 {formatChatDate(chat.updatedAt)}
               </time>
-            </Button>
+            </Link>
           ))
         )}
       </section>
+
+      <Link
+        aria-label="New chat"
+        className="fixed bottom-6 right-6 z-20 flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-105"
+        href="/chat"
+      >
+        <PlusIcon className="size-6" />
+      </Link>
     </div>
   );
 }

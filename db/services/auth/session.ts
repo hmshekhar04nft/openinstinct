@@ -6,8 +6,7 @@ const authenticatedSessionSchema = z
     user: z
       .object({
         id: z.string().min(1),
-        phoneNumber: z.string().min(1),
-        phoneNumberVerified: z.literal(true),
+        email: z.string().min(1),
       })
       .loose(),
   })

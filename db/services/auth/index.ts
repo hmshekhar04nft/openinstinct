@@ -38,15 +38,18 @@ async function initializeAuth() {
       provider: "pg",
       schema: { account, session, user, verification },
     }),
+    emailAndPassword: {
+      enabled: true,
+      minPasswordLength: 8,
+      requireEmailVerification: false,
+    },
     disabledPaths: [
       "/change-email",
       "/request-password-reset",
       "/reset-password",
       "/reset-password/:token",
       "/send-verification-email",
-      "/sign-in/email",
       "/sign-in/social",
-      "/sign-up/email",
       "/verify-email",
       // Wallet disconnection must revoke the Link grant through its plugin.
       "/unlink-account",

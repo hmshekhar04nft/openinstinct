@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: openinstinct
+    runtime: node
+    plan: free
+    buildCommand: corepack enable && corepack prepare pnpm@11.24.0 --activate && pnpm install --frozen-lockfile && pnpm turbo run build:vercel
+    startCommand: ./node_modules/.bin/next start
+    healthCheckPath: /eve/v1/health
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_URL_UNPOOLED
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: KERNEL_API_KEY
+        sync: false
+      - key: BETTER_AUTH_SECRET
+        sync: false
+      - key: SECRET_ENCRYPTION_KEY
+        sync: false
+      - key: BETTER_AUTH_URL
+        sync: false
