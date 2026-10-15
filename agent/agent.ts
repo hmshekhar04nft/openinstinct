@@ -21,8 +21,12 @@ function contextWindowForModel(modelId: string): number {
 
 export default defineAgent({
   defaultTools: false,
-  build: { externalDependencies: ["@workflow/world-postgres"] },
-  experimental: { workflow: { world: "@workflow/world-postgres", modelCallsPerStep: 4 } },
+  build: {
+    externalDependencies: ["@workflow/world-postgres", "playwright-core"],
+  },
+  experimental: {
+    workflow: { world: "@workflow/world-postgres", modelCallsPerStep: 4 },
+  },
   model: defineDynamic({
     events: {
       "step.started": async (_event, ctx) => {

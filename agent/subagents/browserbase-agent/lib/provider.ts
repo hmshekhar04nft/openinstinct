@@ -18,6 +18,7 @@ const sessions = new Map<
     workspaceId: string;
     redactions: string[];
     authPostUrl?: string;
+    ephemeral?: boolean;
   }
 >();
 function configured() {
@@ -47,7 +48,8 @@ async function api(path: string, body?: unknown) {
 export async function create(
   scope: AccessScope,
   workerSessionId: string,
-  url: string
+  url: string,
+  options: { publicOnly?: boolean } = {}
 ) {
   configured();
   await safeBrowserUrl(url);
@@ -98,7 +100,9 @@ export async function create(
         await route.abort();
       }
     });
-    const stored = await readBrowserProfile(scope);
+    const stored = options.publicOnly
+      ? undefined
+      : await readBrowserProfile(scope);
     if (stored) {
       const state = profileForOrigin(JSON.parse(stored), new URL(url).origin);
       if (state.cookies) await context.addCookies(state.cookies);
@@ -130,6 +134,7 @@ export async function create(
       page,
       workspaceId: scope.workspaceId,
       redactions: [],
+      ephemeral: options.publicOnly,
     });
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: 25000 });
     return remote.id as string;
@@ -182,7 +187,7 @@ export async function persist(scope: AccessScope, id: string) {
 export async function close(scope: AccessScope, id: string) {
   const s = get(scope, id);
   try {
-    await persist(scope, id);
+    if (!s.ephemeral) await persist(scope, id);
   } finally {
     sessions.delete(id);
     await s.browser.close().catch(() => {});
